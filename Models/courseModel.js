@@ -1,7 +1,7 @@
 const mongoose = require( 'mongoose' )
 
 const CourseSchema = new mongoose.Schema( {
-    namae: {
+    name: {
         type: String,
         required: true
     },
@@ -9,7 +9,7 @@ const CourseSchema = new mongoose.Schema( {
         type: String,
         required: true
     },
-    fees: {
+    fee: {
         type: String,
         required: true
     },

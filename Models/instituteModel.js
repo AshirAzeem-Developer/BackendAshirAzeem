@@ -10,7 +10,7 @@ const instituteSchema = new mongoose.Schema( {
         required: true
     },
     shortName: {
-        type: String, 
+        type: String,
         required: true
     },
     tel: {
