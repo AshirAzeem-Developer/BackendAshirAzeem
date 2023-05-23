@@ -5,7 +5,7 @@ const instituteSchema = new mongoose.Schema( {
 } )
 
 
-const instituteModel =  mongoose.model( "INSTUTUTE", instituteSchema )
+const instituteModel = mongoose.model( "INSTUTUTE", instituteSchema )
 
 
 module.exports = instituteModel
