@@ -91,8 +91,10 @@ const express = require( 'express' )
 const app = express();
 require( 'dotenv' ).config();
 const teacher = require( './Routes/SchoolRoutes/teacherRoute' )
+const course = require( './Routes/SchoolRoutes/courseRoute' )
 
 app.use( '/api/teacher', teacher )
+app.use( '/api/course', course )
 
 // app.listen( process.env.PORT )
 

@@ -1,30 +1,25 @@
 const mongoose = require( 'mongoose' )
 
-const studentSchema = new mongoose.Schema( {
-    firstName: {
+const CourseSchema = new mongoose.Schema( {
+    namae: {
+        type: String,
+        required: true
+    },
+    duration: {
+        type: String,
+        required: true
+    },
+    fees: {
+        type: String,
+        required: true
+    },
 
+    shortName: {
         type: String,
         required: true
-    },
-    lastName: {
-
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    contact: {
-        type: String,
     }
-
 } )
 
-const studentModel = mongoose.model( "STUDENT", studentSchema )
+const courseModel = mongoose.Model( 'COURSE', CourseSchema )
 
-module.exports = studentModel
+module.exports = courseModel
