@@ -22,11 +22,10 @@ student.get( '/', async ( req, res ) => {
         res.send( sendResponse( false, null, "Internal Server Error" ) ).status( 400 );
     }
 } )
-student.get( '/:id', ( req, res ) => {
-    console.log( "Get Single Institute Data" );
+// student.get( '/:id', ( req, res ) => {
+//     console.log( "Get Single Student Data" );
 
-} )
-
+// } )
 
 student.post( '/', async ( req, res ) => {
     let { firstName, lastName, email, password, contact } = req.body
@@ -48,7 +47,7 @@ student.post( '/', async ( req, res ) => {
             errArr.push( "Required : contact " )
         }
         if ( errArr.length > 0 ) {
-            res.send( sendResponse( false, errArr, null, "Required All Fields" ) ).status( 400 );
+            res.send( sendResponse( false, errArr, null, "Required All Fields" ) ).status( 404 );
             return
 
         }
@@ -70,12 +69,68 @@ student.post( '/', async ( req, res ) => {
 
 } )
 
-student.post( '/:id', ( req, res ) => {
-    console.log( "POST  Student Data  by Id" );
+student.put( '/:id', async ( req, res ) => {
+    try {
+        let id = req.params.id
+        let result = await studentModel.findById( id );
+        if ( !result ) {
+            res.send( sendResponse( false, null, "No Data Found" ) ).status( 400 )
+        } else {
+            let updateResult = await studentModel.findByIdAndUpdate( id, req.body, { new: true } );
+            if ( !updateResult ) {
+                res.send( sendResponse( false, null, "Error" ) ).status( 400 )
+
+            } else {
+                res.send( sendResponse( true, updateResult, "Updated Successfully" ) ).status( 200 )
+
+            }
+
+        }
+    } catch ( error ) {
+        res.send( sendResponse( false, null, "Error" ) ).status( 400 )
+    }
 } )
 
-student.delete( '/:id', ( req, res ) => {
-    console.log( "Delete  Student Data " );
+student.delete( '/:id', async ( req, res ) => {
+    try {
+        let id = req.params.id
+        let result = await studentModel.findById( id )
+        if ( !result ) {
+            res.send( sendResponse( false, null, "No Data On this Id " ) ).status( 404 )
+
+        } else {
+            let delResult = await studentModel.findByIdAndDelete( id )
+            if ( !delResult ) {
+                res.send( sendResponse( true, null, "Error " ) ).status( 404 )
+
+            }
+            else {
+                res.send( sendResponse( true, null, "Deleted Successfully " ) ).status( 200 )
+
+            }
+        }
+    } catch ( error ) {
+        res.send( sendResponse( false, null, "Error" ) ).status( 400 )
+
+    }
+} )
+
+student.get( '/search', async ( req, res ) => {
+    try {
+        let { firstName } = req.body
+        if ( firstName ) {
+            let result = await studentModel.find( { firstName: firstName } )
+            if ( !result ) {
+                res.send( sendResponse( false, null, "No Data Found" ) ).status( 404 )
+            }
+            else {
+                res.send( sendResponse( true, result ) ).status( 200 )
+            }
+        }
+    } catch ( error ) {
+        res.send( sendResponse( false, null, "Error" ) ).status( 400 )
+
+    }
 } )
 
 module.exports = student

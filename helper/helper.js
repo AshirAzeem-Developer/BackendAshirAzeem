@@ -10,6 +10,8 @@ const sendResponse = ( status, data, error, message ) => {
     ResponseObj.data = data;
     ResponseObj.error = error;
     ResponseObj.message = message;
+
+    return ResponseObj
 }
 
 module.exports = {

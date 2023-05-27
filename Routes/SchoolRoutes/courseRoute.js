@@ -1,6 +1,7 @@
 const express = require( 'express' );
 const courseModel = require( '../../Models/courseModel' )
-const { sendResponse } = require( '../../helper/helper' )
+const { sendResponse } = require( '../../helper/helper' );
+const { findByIdAndUpdate } = require( '../../Models/courseModel' );
 const course = express.Router();
 
 course.get( '/', async ( req, res ) => {
@@ -62,13 +63,70 @@ course.post( '/', async ( req, res ) => {
     }
 
 } )
-course.post( '/:id', ( req, res ) => {
-    console.log( "POST  course Data By Id" );
+course.put( '/:id', async ( req, res ) => {
+    try {
+        let id = req.params.id
+        const result = await courseModel.findById( id )
+        if ( !result ) {
+            res.send( sendResponse( false, null, "No Data Found " ) ).status( 400 )
 
+
+        } else {
+            let updateResult = await findByIdAndUpdate( id, req.body, { new: true } )
+            if ( !updateResult ) {
+                res.send( sendResponse( false, null, "Error" ) ).status( 404 )
+
+            }
+            else {
+
+                res.send( sendResponse( true, updateResult, "Updated Successflly" ) ).status( 200 )
+            }
+
+        }
+
+    } catch ( error ) {
+        res.send( sendResponse( false, null, "Error" ) ).status( 400 )
+    }
 } )
-course.delete( '/:id', ( req, res ) => {
-    console.log( "Delete course Data" );
+course.delete( '/:id', async ( req, res ) => {
+    try {
+        let id = req.params.id
+        let result = await courseModel.findById( id )
+        if ( !result ) {
+            res.send( sendResponse( false, null, "No Data On this Id " ) ).status( 404 )
 
+        } else {
+            let delResult = await courseModel.findByIdAndDelete( id )
+            if ( !delResult ) {
+                res.send( sendResponse( true, null, "Error " ) ).status( 404 )
+
+            }
+            else {
+                res.send( sendResponse( true, null, "Deleted Successfully " ) ).status( 200 )
+
+            }
+        }
+    } catch ( error ) {
+        res.send( sendResponse( false, null, "Error" ) ).status( 400 )
+
+    }
+} )
+course.get( '/search', async ( req, res ) => {
+    try {
+        let { shortName } = req.body
+        if ( shortName ) {
+            let result = await courseModel.find( { shortName: shortName } )
+            if ( !result ) {
+                res.send( sendResponse( false, null, "No Data Found" ) ).status( 404 )
+            }
+            else {
+                res.send( sendResponse( true, result ) ).status( 200 )
+            }
+        }
+    } catch ( error ) {
+        res.send( sendResponse( false, null, "Error" ) ).status( 400 )
+
+    }
 } )
 
 module.exports = course

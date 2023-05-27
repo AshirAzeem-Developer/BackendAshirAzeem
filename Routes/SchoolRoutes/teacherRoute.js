@@ -1,5 +1,5 @@
 const express = require( 'express' )
-const teacherModel = require( '../../Models/studentModel' )
+const teacherModel = require( '../../Models/teacherModel' )
 const { sendResponse } = require( '../../helper/helper' )
 
 
@@ -22,7 +22,9 @@ teacher.get( '/', async ( req, res ) => {
     }
 
 } )
-teacher.get( '/:id', ( req, res ) => { console.log( "Get Individual Teacher Data " ); } )
+teacher.get( '/:id', ( req, res ) => {
+    console.log( "Get Individual Teacher Data " );
+} )
 
 
 teacher.post( '/', async ( req, res ) => {
@@ -60,7 +62,67 @@ teacher.post( '/', async ( req, res ) => {
     }
 
 } )
-teacher.post( '/:id', ( req, res ) => { console.log( "POST Teacher Data By Id " ); } )
-teacher.get( '/:id', ( req, res ) => { console.log( "Delete Teacher Data " ); } )
+teacher.put( '/:id', async ( req, res ) => {
+    try {
+        let id = req.params.id
+        let result = await teacherModel.findById( id );
+        if ( !result ) {
+            res.send( sendResponse( false, null, "No Data Found" ) ).status( 400 )
+        } else {
+            let updateResult = await teacherModel.findByIdAndUpdate( id, req.body, { new: true } );
+            if ( !updateResult ) {
+                res.send( sendResponse( false, null, "Error" ) ).status( 400 )
+
+            } else {
+                res.send( sendResponse( true, updateResult, "Updated Successfully" ) ).status( 200 )
+
+            }
+
+        }
+    } catch ( error ) {
+        res.send( sendResponse( false, null, "Error" ) ).status( 400 )
+    }
+} )
+teacher.delete( '/:id', async ( req, res ) => {
+    try {
+        let id = req.params.id
+        let result = await teacherModel.findById( id )
+        if ( !result ) {
+            res.send( sendResponse( false, null, "No Data On this Id " ) ).status( 404 )
+
+        } else {
+            let delResult = await teacherModel.findByIdAndDelete( id )
+            if ( !delResult ) {
+                res.send( sendResponse( true, null, "Error " ) ).status( 404 )
+
+            }
+            else {
+                res.send( sendResponse( true, null, "Deleted Successfully " ) ).status( 200 )
+
+            }
+        }
+    } catch ( error ) {
+        res.send( sendResponse( false, null, "Error" ) ).status( 400 )
+
+    }
+} )
+
+teacher.get( '/search', async ( req, res ) => {
+    try {
+        let { firstName } = req.body
+        if ( firstName ) {
+            let result = await teacherModel.find( { firstName: firstName } )
+            if ( !result ) {
+                res.send( sendResponse( false, null, "No Data Found" ) ).status( 404 )
+            }
+            else {
+                res.send( sendResponse( true, result ) ).status( 200 )
+            }
+        }
+    } catch ( error ) {
+        res.send( sendResponse( false, null, "Error" ) ).status( 400 )
+
+    }
+} )
 
 module.exports = teacher

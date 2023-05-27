@@ -88,19 +88,23 @@
 
 
 const express = require( 'express' )
-const app = express();
+const mongoose = require( 'mongoose' )
 require( 'dotenv' ).config();
+const app = express();
+const cors = require( 'cors' )
+
+app.use( express.json() );
+app.use( cors() );
+
 const teacher = require( './Routes/SchoolRoutes/teacherRoute' )
 const course = require( './Routes/SchoolRoutes/courseRoute' )
+const student = require( './Routes/SchoolRoutes/studentRoute' )
+const institute = require( './Routes/SchoolRoutes/instituteRoute' )
 
 app.use( '/api/teacher', teacher )
-app.use( '/api/course', course )
-
-// app.listen( process.env.PORT )
-
-
-
-const mongoose = require( "mongoose" )
+app.use( '/api/courses', course )
+app.use( '/api/student', student )
+app.use( '/api/institute', institute )
 
 mongoose.connect( process.env.MONGO_URI ).then( () => {
 
